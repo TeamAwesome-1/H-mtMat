@@ -16,6 +16,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.teamawsome.awsomeeat.Model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SignUp extends AppCompatActivity {
 
     MaterialEditText edtPhone,edtName,edtPassword;
@@ -32,6 +35,31 @@ public class SignUp extends AppCompatActivity {
         // FIREBASE
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference table_user= database.getReference("User");
+        final DatabaseReference databaseReference = database.getReference();
+        final List foodCollection = new ArrayList();
+
+        databaseReference.child("Category").addValueEventListener(new ValueEventListener() {
+
+            /** This method will be invoked anytime the data changes in the database child "Category"
+             *
+             * @param dataSnapshot
+             */
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Get all the children to "Category".
+
+               Iterable<DataSnapshot> children =  dataSnapshot.getChildren();
+                // Trying to save the food names in an ArrayList.
+                for (DataSnapshot child : children) {
+                    foodCollection.add(databaseReference.child("Category").child("Name"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
